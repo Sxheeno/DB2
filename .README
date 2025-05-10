@@ -1,0 +1,4 @@
+Run tables.sql first
+Then views.sql
+Then all PL/SQL scripts
+Finally load data with sample_data.sql
