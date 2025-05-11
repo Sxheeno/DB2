@@ -1,4 +1,3 @@
--- CAPITALIZE CUSTOMER NAMES TRIGGER
 CREATE OR REPLACE TRIGGER trg_capitalize_names
 BEFORE INSERT OR UPDATE ON customer
 FOR EACH ROW
@@ -9,22 +8,18 @@ BEGIN
 END;
 /
 
--- UPDATE CAR STATUS ON RENTAL TRIGGER
 CREATE OR REPLACE TRIGGER trg_update_car_status
 AFTER INSERT OR UPDATE OF status ON rental
 FOR EACH ROW
 BEGIN
     IF :NEW.status = 'ONGOING' THEN
-        UPDATE car SET status = 'RENTED' 
-        WHERE registration = :NEW.car_registration;
+        UPDATE car SET status = 'RENTED' WHERE registration = :NEW.car_registration;
     ELSIF :NEW.status = 'COMPLETED' THEN
-        UPDATE car SET status = 'AVAILABLE' 
-        WHERE registration = :NEW.car_registration;
+        UPDATE car SET status = 'AVAILABLE' WHERE registration = :NEW.car_registration;
     END IF;
 END;
 /
 
--- MAINTAIN MAINTENANCE LOG TRIGGER
 CREATE OR REPLACE TRIGGER trg_maintenance_log
 AFTER UPDATE OF status ON car
 FOR EACH ROW

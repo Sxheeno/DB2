@@ -1,4 +1,3 @@
--- MANUFACTURER TABLE
 CREATE TABLE manufacturer (
     manufacturer_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR2(50) NOT NULL,
@@ -6,14 +5,12 @@ CREATE TABLE manufacturer (
     founded_date DATE
 );
 
--- CAR_CATEGORY TABLE
 CREATE TABLE car_category (
     category_code VARCHAR2(3) PRIMARY KEY,
     description VARCHAR2(50) NOT NULL,
     daily_rate_multiplier NUMBER(3,2) DEFAULT 1.00
 );
 
--- MODEL TABLE
 CREATE TABLE model (
     model_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     manufacturer_id NUMBER REFERENCES manufacturer(manufacturer_id),
@@ -24,7 +21,6 @@ CREATE TABLE model (
     fuel_type VARCHAR2(20) CHECK (fuel_type IN ('Petrol', 'Diesel', 'Hybrid', 'Electric'))
 );
 
--- LOCATION TABLE
 CREATE TABLE location (
     location_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     location_name VARCHAR2(50),
@@ -34,7 +30,6 @@ CREATE TABLE location (
     opening_hours VARCHAR2(100) DEFAULT '08:00-20:00'
 );
 
--- CUSTOMER TABLE
 CREATE TABLE customer (
     customer_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     first_name VARCHAR2(50) NOT NULL,
@@ -49,7 +44,6 @@ CREATE TABLE customer (
     loyalty_points NUMBER DEFAULT 0
 );
 
--- CAR TABLE
 CREATE TABLE car (
     registration VARCHAR2(20) PRIMARY KEY,
     model_id NUMBER REFERENCES model(model_id),
@@ -63,7 +57,6 @@ CREATE TABLE car (
     next_service_mileage NUMBER
 );
 
--- EXTRA_EQUIPMENT TABLE
 CREATE TABLE extra_equipment (
     equipment_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     description VARCHAR2(100) NOT NULL,
@@ -72,7 +65,6 @@ CREATE TABLE extra_equipment (
     reorder_threshold NUMBER DEFAULT 5
 );
 
--- RENTAL TABLE
 CREATE TABLE rental (
     rental_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     customer_id NUMBER REFERENCES customer(customer_id),
@@ -83,4 +75,22 @@ CREATE TABLE rental (
     total_cost NUMBER(10,2),
     status VARCHAR2(20) DEFAULT 'CONFIRMED' CHECK (status IN ('CONFIRMED', 'ONGOING', 'CANCELLED', 'COMPLETED')),
     payment_method VARCHAR2(20),
-    discount_amount NUMBER(10,2) DEFAULT 
+    discount_amount NUMBER(10,2) DEFAULT 0
+);
+
+CREATE TABLE rental_equipment (
+    rental_id NUMBER REFERENCES rental(rental_id),
+    equipment_id NUMBER REFERENCES extra_equipment(equipment_id),
+    quantity NUMBER DEFAULT 1,
+    PRIMARY KEY (rental_id, equipment_id)
+);
+
+CREATE TABLE maintenance_log (
+    log_id NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    car_registration VARCHAR2(20) REFERENCES car(registration),
+    maintenance_date DATE DEFAULT SYSDATE,
+    maintenance_type VARCHAR2(50),
+    cost NUMBER(10,2),
+    description VARCHAR2(500),
+    technician VARCHAR2(50)
+);
