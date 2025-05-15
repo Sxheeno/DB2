@@ -1,3 +1,13 @@
+CREATE OR REPLACE VIEW popular_models AS
+SELECT l.city, m.model_name, COUNT(*) AS rental_count
+FROM rental r
+JOIN car c ON r.car_registration = c.registration
+JOIN model m ON c.model_id = m.model_id
+JOIN location l ON c.location_id = l.location_id
+GROUP BY l.city, m.model_name
+ORDER BY l.city, rental_count DESC;
+
+
 -- ACTIVE RENTALS VIEW
 CREATE OR REPLACE VIEW active_rentals AS
 SELECT 
